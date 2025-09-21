@@ -1,10 +1,1 @@
-# Embedded
-# Embedded
-# Embedded
-# Embedded
-# Embedded
-# Avr-Rust_nano
-# Avr-Rust_nano
-# Avr-Rust_nano
-# Avr-Rust_nano
-# Avr-Rust_nano
+# Rust embebido para Arduino
