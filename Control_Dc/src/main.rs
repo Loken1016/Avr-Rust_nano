@@ -1,58 +1,23 @@
 #![no_std]
 #![no_main]
 
-use avr_device::atmega328p;
+use arduino_hal::simple_pwm::*;
 use panic_halt as _;
-use core::ptr;
 
-#[no_mangle]
-pub extern "C" fn main() -> ! {
-    // Obtener perifericos
-    let dp = atmega328p::Peripherals::take().unwrap();
+#[arduino_hal::entry]
+fn main() -> ! {
+    let dp = arduino_hal::Peripherals::take().unwrap();
+    let pins = arduino_hal::pins!(dp);
 
-    // --- Configurar pines D8 y D7 como salida ---
-    unsafe {
-        // DDRB bits 0=D8, 1=D9 → DDRB0=PB0=D8, DDRB1=PB1=D9
-        dp.PORTB.ddr.write(|w| w.bits(0b00000011)); 
-    }
+    let timer1 = Timer1Pwm::new(dp.TC1, Prescaler::Prescale64);
 
-    // --- Configurar PWM en D9 (OC1A, Timer1, Fast PWM 8-bit) ---
-    unsafe {
-        // WGM10=1 (modo Fast PWM 8-bit), COM1A1=1 (set OC1A on compare match)
-        dp.TC1.tccr1a.write(|w| w.bits(0b10000001));
-        dp.TC1.tccr1b.write(|w| w.bits(0b00000011)); // CS11=1, CS10=1 → prescaler 64
-        dp.TC1.ocr1a.write(|w| w.bits(128)); // 50% duty
-    }
+    let mut led3 = pins.d9.into_output().into_pwm(&timer1);
+    led3.enable();
+    led3.set_duty(led3.get_max_duty() );
 
-    // --- Variables para temporización ---
-    let mut forward = true;
-    let mut speed_high = false;
-    let mut last_change = 0u32;
+    let _led1 = pins.d7.into_output().set_high();
+    let _led2 = pins.d8.into_output().set_low() ;
 
-    loop {
-        // Leer millis() desde Timer0 (simula arduino_hal::millis)
-        let ms = unsafe { ptr::read_volatile(0x084 as *const u32) }; // Ejemplo: necesitas implementar un contador de millis
 
-        if ms.wrapping_sub(last_change) >= 2000 {
-            last_change = ms;
-
-            // Cambiar dirección
-            unsafe {
-                if forward {
-                    ptr::write_volatile(0x25 as *mut u8, 0b00000001); // PORTB0=HIGH, D8
-                } else {
-                    ptr::write_volatile(0x25 as *mut u8, 0b00000010); // PORTB1=HIGH, D9
-                }
-
-                // Cambiar velocidad
-                let duty = if speed_high { 255 } else { 128 };
-                dp.TC1.ocr1a.write(|w| w.bits(duty));
-            }
-
-            speed_high = !speed_high;
-            if !speed_high {
-                forward = !forward;
-            }
-        }
-    }
+    loop { }
 }
