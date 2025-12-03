@@ -2,6 +2,8 @@
 
 ## Aclaraciones antes de usar:
 
+Cualquier programa que no este dentro del directorio ```correct``` no va a funcionar, este directorio funciona como una reescritura de codigo corrigiendo errores que hacian que los programas no funcionaran o organizandolos de mejor manera para su facil lectura, planeo reestructurar los programas que estan bien en la parte principal del repo y poner los que fallan en una carpeta llamada Old_versions pero este cambio no se a hecho por lo que no intente ejecutar esos programas aunque sus fechas de edicion sean correctas pues solo cambie pequeñas cosas pero no van a funcionar 
+
 Estos programas fueron usados en un arduino nano y fueron totalmente funcionales hasta la fecha presente 03 de diciembre y han sido creados desde avr-hal-template, no estoy seguro si al crear el directorio y seleccionar el target de nano impida que mis programas funcionen en otros dispositivos como Arduino Uno por lo que si usted posee el antes mencionado y le da error puede crear un archivo desde avr-hal-template y copiar el codigo he intentar subir el codigo de nuevo.
 
 ## Pre requisitos y recomendaciones
