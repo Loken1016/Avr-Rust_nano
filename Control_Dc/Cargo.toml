@@ -10,25 +10,20 @@ name = "nano-1"
 test = false
 bench = false
 
+# --- Desactivar std ---
 [dependencies]
-panic-halt = "1.0.0"
-ufmt = "0.2.0"
-nb = "1.1.0"
-embedded-hal = "1.0.0"
+panic-halt = "0.2.0"    # Para detener el programa si ocurre panic
 
-arduino-hal = { git = "https://github.com/Rahix/avr-hal", package = "arduino-hal", features = ["arduino-nano"], branch = "main" }
+# --- Crates para AVR -->
+[dependencies.avr-device]
+version = "0.3.0"
+features = ["atmega328p"]
 
-
-
-# Configure the build for minimal size - AVRs have very little program memory
-[profile.dev]
-panic = "abort"
-lto = true
-opt-level = "s"
+# Opcional: si quieres macros y utilidades de bitflags
+[dependencies.bitflags]
+version = "1.3.3"
 
 [profile.release]
-panic = "abort"
-codegen-units = 1
-debug = true
+codegen-units = 1   # optimización máxima
 lto = true
 opt-level = "s"
